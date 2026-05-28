@@ -47,6 +47,7 @@ function normalizeUploadedEvents(value: unknown): MatchEvent[] | null {
         title: typeof item.title === "string" ? item.title : "关键事件",
         subtitle: typeof item.subtitle === "string" ? item.subtitle : "比赛节点",
         description: typeof item.description === "string" ? item.description : "概率出现明显变化",
+        scoreAfter: typeof item.scoreAfter === "string" ? item.scoreAfter : undefined,
         avatarUrl: typeof item.avatarUrl === "string" ? item.avatarUrl : undefined,
         team,
         color,
@@ -74,6 +75,16 @@ function downloadJson(filename: string, value: unknown) {
   URL.revokeObjectURL(url);
 }
 
+function scoreAtMinute(events: MatchEvent[], finalScore: string, currentMinute: number) {
+  const latestScoringEvent = events
+    .filter((event) => event.scoreAfter && event.minute <= currentMinute)
+    .sort((a, b) => b.minute - a.minute)[0];
+
+  if (latestScoringEvent?.scoreAfter) return latestScoringEvent.scoreAfter;
+  if (currentMinute >= MAX_MINUTE) return finalScore;
+  return "0-0";
+}
+
 export default function Home() {
   const frameRef = useRef<HTMLDivElement>(null);
   const [currentMinute, setCurrentMinute] = useState(0);
@@ -90,6 +101,7 @@ export default function Home() {
 
   const theme = themes[themeIndex];
   const isDarkTheme = theme.name === "night";
+  const liveScore = scoreAtMinute(events, score, currentMinute);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -225,7 +237,7 @@ export default function Home() {
 
         <div className="relative z-10 grid h-full grid-cols-[300px_minmax(0,1fr)] gap-5">
           <aside className="flex min-h-0 flex-col gap-3">
-            <MatchHeader teams={teams} score={score} currentMinute={currentMinute} isDark={isDarkTheme} />
+            <MatchHeader teams={teams} score={liveScore} currentMinute={currentMinute} isDark={isDarkTheme} />
             <EventTimeline events={events} currentMinute={currentMinute} />
           </aside>
 

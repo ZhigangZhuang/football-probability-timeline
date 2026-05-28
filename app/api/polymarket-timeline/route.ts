@@ -47,6 +47,7 @@ type ConfiguredGoal = {
   title: string;
   subtitle: string;
   description: string;
+  scoreAfter?: string;
   avatarUrl?: string;
   team: MatchEvent["team"];
   color: MatchEvent["color"];
@@ -199,6 +200,7 @@ const matchConfigs: Record<string, MatchConfig> = {
         title: "43' 进球",
         subtitle: "多库",
         description: "Man City 0-1",
+        scoreAfter: "0-1",
         avatarUrl: "https://resources.premierleague.com/premierleague/photos/players/250x250/p248875.png",
         team: "away",
         color: "red",
@@ -210,6 +212,7 @@ const matchConfigs: Record<string, MatchConfig> = {
         title: "68' 进球",
         subtitle: "蒂埃诺·巴里",
         description: "Everton 1-1",
+        scoreAfter: "1-1",
         avatarUrl: "https://ui-avatars.com/api/?name=%E5%B7%B4%E9%87%8C&background=10b981&color=fff&bold=true&size=128",
         team: "home",
         color: "green",
@@ -221,6 +224,7 @@ const matchConfigs: Record<string, MatchConfig> = {
         title: "73' 进球",
         subtitle: "杰克·奥布赖恩",
         description: "Everton 2-1",
+        scoreAfter: "2-1",
         avatarUrl: "https://resources.premierleague.com/premierleague/photos/players/250x250/p512462.png",
         team: "home",
         color: "green",
@@ -232,6 +236,7 @@ const matchConfigs: Record<string, MatchConfig> = {
         title: "81' 进球",
         subtitle: "蒂埃诺·巴里",
         description: "Everton 3-1",
+        scoreAfter: "3-1",
         avatarUrl: "https://ui-avatars.com/api/?name=%E5%B7%B4%E9%87%8C&background=10b981&color=fff&bold=true&size=128",
         team: "home",
         color: "green",
@@ -243,6 +248,7 @@ const matchConfigs: Record<string, MatchConfig> = {
         title: "83' 进球",
         subtitle: "哈兰德",
         description: "Man City 3-2",
+        scoreAfter: "3-2",
         avatarUrl: "https://resources.premierleague.com/premierleague/photos/players/250x250/p223094.png",
         team: "away",
         color: "red",
@@ -254,6 +260,7 @@ const matchConfigs: Record<string, MatchConfig> = {
         title: "90+7' 进球",
         subtitle: "多库",
         description: "Man City 3-3",
+        scoreAfter: "3-3",
         avatarUrl: "https://resources.premierleague.com/premierleague/photos/players/250x250/p248875.png",
         team: "away",
         color: "red",

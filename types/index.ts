@@ -15,6 +15,7 @@ export type MatchEvent = {
   title: string;
   subtitle: string;
   description: string;
+  scoreAfter?: string;
   avatarUrl?: string;
   team: "home" | "away";
   color: "green" | "yellow" | "red";

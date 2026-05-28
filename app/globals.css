@@ -26,8 +26,13 @@ body {
 }
 
 .phone-shell {
-  width: min(1180px, calc((100vh - 48px) * 16 / 9), calc(100vw - 40px));
-  height: min(664px, calc(100vh - 48px), calc((100vw - 40px) * 9 / 16));
+  width: min(1920px, calc((100vh - 48px) * 16 / 9), calc(100vw - 40px));
+  height: min(1080px, calc(100vh - 48px), calc((100vw - 40px) * 9 / 16));
+}
+
+.record-shell {
+  width: min(1920px, calc(100vh * 16 / 9), 100vw);
+  height: min(1080px, 100vh, calc(100vw * 9 / 16));
 }
 
 @media (max-width: 720px) {

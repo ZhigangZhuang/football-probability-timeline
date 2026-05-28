@@ -79,6 +79,9 @@ export default function Home() {
   const [currentMinute, setCurrentMinute] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [showEvents, setShowEvents] = useState(true);
+  const [isRecordMode] = useState(
+    () => typeof window !== "undefined" && new URLSearchParams(window.location.search).get("record") === "1"
+  );
   const [themeIndex, setThemeIndex] = useState(0);
   const [events, setEvents] = useState<MatchEvent[]>(matchEvents);
   const [chartData, setChartData] = useState<ProbabilityPoint[]>(probabilityData);
@@ -201,11 +204,17 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-5 px-6 py-4 lg:flex-row lg:px-10">
+    <main
+      className={cn(
+        "flex min-h-screen flex-col items-center justify-center lg:flex-row",
+        isRecordMode ? "gap-0 bg-black p-0" : "gap-5 px-6 py-4 lg:px-10"
+      )}
+    >
       <motion.div
         ref={frameRef}
         className={cn(
-          "phone-shell relative overflow-hidden bg-gradient-to-b px-6 py-5 shadow-poster ring-1 ring-white/20",
+          "relative overflow-hidden bg-gradient-to-b px-6 py-5 shadow-poster ring-1 ring-white/20",
+          isRecordMode ? "record-shell" : "phone-shell",
           theme.background
         )}
         initial={{ opacity: 0, y: 18, scale: 0.98 }}
@@ -229,33 +238,35 @@ export default function Home() {
         </div>
       </motion.div>
 
-      <Controls
-        currentMinute={currentMinute}
-        isPlaying={isPlaying}
-        showEvents={showEvents}
-        themeLabel={theme.label}
-        teams={teams}
-        onReplay={handleReplay}
-        onPlayPause={() => setIsPlaying((playing) => !playing)}
-        onToggleEvents={() => setShowEvents((visible) => !visible)}
-        onNextTheme={() => setThemeIndex((index) => (index + 1) % themes.length)}
-        onSeek={handleSeek}
-        onExportPng={handleExportPng}
-        onExportStoryboard={handleExportStoryboard}
-        onUploadEvents={handleUploadEvents}
-        onHomeTeamChange={(name) =>
-          setTeams((value) => ({
-            ...value,
-            home: { ...value.home, name: name || "主队" }
-          }))
-        }
-        onAwayTeamChange={(name) =>
-          setTeams((value) => ({
-            ...value,
-            away: { ...value.away, name: name || "客队" }
-          }))
-        }
-      />
+      {!isRecordMode && (
+        <Controls
+          currentMinute={currentMinute}
+          isPlaying={isPlaying}
+          showEvents={showEvents}
+          themeLabel={theme.label}
+          teams={teams}
+          onReplay={handleReplay}
+          onPlayPause={() => setIsPlaying((playing) => !playing)}
+          onToggleEvents={() => setShowEvents((visible) => !visible)}
+          onNextTheme={() => setThemeIndex((index) => (index + 1) % themes.length)}
+          onSeek={handleSeek}
+          onExportPng={handleExportPng}
+          onExportStoryboard={handleExportStoryboard}
+          onUploadEvents={handleUploadEvents}
+          onHomeTeamChange={(name) =>
+            setTeams((value) => ({
+              ...value,
+              home: { ...value.home, name: name || "主队" }
+            }))
+          }
+          onAwayTeamChange={(name) =>
+            setTeams((value) => ({
+              ...value,
+              away: { ...value.away, name: name || "客队" }
+            }))
+          }
+        />
+      )}
     </main>
   );
 }

@@ -13,7 +13,7 @@ import type { MatchEvent, MatchTimelinePayload, ProbabilityPoint, TeamInfo } fro
 
 const PLAYBACK_DURATION_MS = 20_000;
 const MAX_MINUTE = 90;
-const DEFAULT_POLYMARKET_SLUG = "epl-eve-mac-2026-05-04";
+const DEFAULT_POLYMARKET_SLUG = "ucl-psg-ars-2026-05-30";
 
 const fallbackPositions = [
   { left: "5%", top: "12%" },

@@ -16,6 +16,10 @@ type GammaMarket = {
   outcomePrices: string;
   clobTokenIds: string;
   sportsMarketType?: string;
+  gameStartTime?: string;
+  startDate?: string;
+  endDate?: string;
+  updatedAt?: string;
   closedTime?: string;
 };
 
@@ -24,6 +28,9 @@ type GammaEvent = {
   title: string;
   score?: string;
   startTime?: string;
+  startDate?: string;
+  endDate?: string;
+  updatedAt?: string;
   finishedTimestamp?: string;
   closedTime?: string;
   teams?: GammaTeam[];
@@ -37,7 +44,7 @@ type PriceHistoryPoint = {
 
 const GAMMA_API_BASE = "https://gamma-api.polymarket.com";
 const CLOB_API_BASE = "https://clob.polymarket.com";
-const DEFAULT_SLUG = "epl-eve-mac-2026-05-04";
+const DEFAULT_SLUG = "ucl-psg-ars-2026-05-30";
 const MARKET_REACTION_LAG_SECONDS = 60;
 const ESTIMATED_HALFTIME_SECONDS = 16 * 60;
 
@@ -70,7 +77,8 @@ function parseJsonArray<T>(value: string, fallback: T[]): T[] {
 
 function timestampSeconds(value?: string) {
   if (!value) return null;
-  const ms = new Date(value).getTime();
+  const normalized = value.replace(" ", "T");
+  const ms = new Date(normalized).getTime();
   return Number.isFinite(ms) ? Math.floor(ms / 1000) : null;
 }
 
@@ -140,6 +148,41 @@ function chartPosition(minute: number, value: number) {
 }
 
 const matchConfigs: Record<string, MatchConfig> = {
+  "ucl-psg-ars-2026-05-30": {
+    timestampAnchors: (startTs) => [
+      { minute: 0, ts: startTs + MARKET_REACTION_LAG_SECONDS },
+      { minute: 6, ts: startTs + 7 * 60 + 5 },
+      { minute: 45, ts: startTs + 49 * 60 },
+      { minute: 65, ts: startTs + 87 * 60 + 6 },
+      { minute: 90, ts: startTs + 122 * 60 + 4 }
+    ],
+    goals: [
+      {
+        id: "goal-6-havertz",
+        minute: 6,
+        title: "6' 进球",
+        subtitle: "哈弗茨",
+        description: "Arsenal 0-1",
+        scoreAfter: "0-1",
+        avatarUrl: "https://resources.premierleague.com/premierleague/photos/players/250x250/p219847.png",
+        team: "away",
+        color: "red",
+        probabilityKey: "awayWin"
+      },
+      {
+        id: "goal-65-dembele",
+        minute: 65,
+        title: "65' 点球",
+        subtitle: "登贝莱",
+        description: "PSG 1-1",
+        scoreAfter: "1-1",
+        avatarUrl: "https://ui-avatars.com/api/?name=%E7%99%BB%E8%B4%9D%E8%8E%B1&background=105070&color=fff&bold=true&size=128",
+        team: "home",
+        color: "yellow",
+        probabilityKey: "draw"
+      }
+    ]
+  },
   "epl-che-tot-2026-05-19": {
     timestampAnchors: (startTs, endTs) => [
       { minute: 0, ts: startTs + MARKET_REACTION_LAG_SECONDS },
@@ -420,11 +463,22 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Moneyline markets not found" }, { status: 404 });
     }
 
-    const startTs = timestampSeconds(event.startTime);
+    const startTs =
+      timestampSeconds(event.startTime) ??
+      timestampSeconds(homeMarket.gameStartTime) ??
+      timestampSeconds(drawMarket.gameStartTime) ??
+      timestampSeconds(awayMarket.gameStartTime) ??
+      timestampSeconds(event.endDate);
     const endTs =
       timestampSeconds(event.finishedTimestamp) ??
       timestampSeconds(event.closedTime) ??
-      timestampSeconds(homeMarket.closedTime);
+      timestampSeconds(homeMarket.closedTime) ??
+      timestampSeconds(drawMarket.closedTime) ??
+      timestampSeconds(awayMarket.closedTime) ??
+      timestampSeconds(event.updatedAt) ??
+      timestampSeconds(drawMarket.updatedAt) ??
+      timestampSeconds(homeMarket.updatedAt) ??
+      timestampSeconds(awayMarket.updatedAt);
 
     if (!startTs || !endTs || endTs <= startTs) {
       return NextResponse.json({ error: "Missing match timestamps" }, { status: 422 });
@@ -460,9 +514,10 @@ export async function GET(request: Request) {
 
     const homeName = homeTeam?.alias ?? homeTeam?.name ?? "主队";
     const awayName = awayTeam?.alias ?? awayTeam?.name ?? "客队";
+    const league = slug.split("-")[0] || "epl";
     const payload: MatchTimelinePayload = {
       source: "polymarket",
-      sourceUrl: `https://polymarket.com/zh/sports/epl/${slug}`,
+      sourceUrl: `https://polymarket.com/zh/sports/${league}/${slug}`,
       slug,
       title: event.title,
       score: event.score ?? "2-1",

@@ -1,6 +1,6 @@
 "use client";
 
-import { Activity, Gauge } from "lucide-react";
+import { Activity } from "lucide-react";
 import type { ProbabilityPoint, TeamInfo } from "@/types";
 import { formatMatchMinute, formatPercent } from "@/lib/utils";
 
@@ -80,20 +80,6 @@ export function ProbabilitySummary({ point, teams }: ProbabilitySummaryProps) {
             </div>
           );
         })}
-      </div>
-
-      <div className="mt-3 grid grid-cols-2 gap-2">
-        <div className="rounded-2xl border border-slate-200 bg-white/60 px-3 py-2">
-          <div className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-[0.14em] text-slate-400">
-            <Gauge className="h-3 w-3" />
-            波动
-          </div>
-          <div className="mt-1 text-[13px] font-black text-slate-800">实时跟随</div>
-        </div>
-        <div className="rounded-2xl border border-slate-200 bg-white/60 px-3 py-2">
-          <div className="text-[9px] font-black uppercase tracking-[0.14em] text-slate-400">source</div>
-          <div className="mt-1 text-[13px] font-black text-slate-800">市场价格</div>
-        </div>
       </div>
     </section>
   );

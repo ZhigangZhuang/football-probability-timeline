@@ -7,6 +7,7 @@ import { Controls } from "@/components/Controls";
 import { EventTimeline } from "@/components/EventTimeline";
 import { MatchHeader } from "@/components/MatchHeader";
 import { ProbabilityChart } from "@/components/ProbabilityChart";
+import { ProbabilitySummary } from "@/components/ProbabilitySummary";
 import { defaultTeams, matchEvents, probabilityData, themes } from "@/lib/mockData";
 import { cn } from "@/lib/utils";
 import type { MatchEvent, MatchTimelinePayload, ProbabilityPoint, TeamInfo } from "@/types";
@@ -102,6 +103,7 @@ export default function Home() {
   const theme = themes[themeIndex];
   const isDarkTheme = theme.name === "night";
   const liveScore = scoreAtMinute(events, score, currentMinute);
+  const currentPoint = chartData[Math.min(MAX_MINUTE, Math.max(0, currentMinute))] ?? chartData[0];
 
   useEffect(() => {
     const controller = new AbortController();
@@ -239,6 +241,7 @@ export default function Home() {
           <aside className="flex min-h-0 flex-col gap-3">
             <MatchHeader teams={teams} score={liveScore} currentMinute={currentMinute} isDark={isDarkTheme} />
             <EventTimeline events={events} currentMinute={currentMinute} />
+            <ProbabilitySummary point={currentPoint} teams={teams} />
           </aside>
 
           <ProbabilityChart

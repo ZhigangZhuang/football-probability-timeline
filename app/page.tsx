@@ -91,9 +91,7 @@ export default function Home() {
   const [currentMinute, setCurrentMinute] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [showEvents, setShowEvents] = useState(true);
-  const [isRecordMode] = useState(
-    () => typeof window !== "undefined" && new URLSearchParams(window.location.search).get("record") === "1"
-  );
+  const [isRecordMode, setIsRecordMode] = useState(false);
   const [themeIndex, setThemeIndex] = useState(0);
   const [events, setEvents] = useState<MatchEvent[]>(matchEvents);
   const [chartData, setChartData] = useState<ProbabilityPoint[]>(probabilityData);
@@ -104,6 +102,10 @@ export default function Home() {
   const isDarkTheme = theme.name === "night";
   const liveScore = scoreAtMinute(events, score, currentMinute);
   const currentPoint = chartData[Math.min(MAX_MINUTE, Math.max(0, currentMinute))] ?? chartData[0];
+
+  useEffect(() => {
+    setIsRecordMode(new URLSearchParams(window.location.search).get("record") === "1");
+  }, []);
 
   useEffect(() => {
     const controller = new AbortController();

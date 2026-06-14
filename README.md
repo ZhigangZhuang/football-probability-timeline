@@ -1,6 +1,6 @@
 # football-probability-timeline
 
-横版短视频风格的足球比赛胜平负概率走势可视化。当前版本会默认加载 Netherlands vs. Japan 这场 Polymarket 真实历史价格；如果接口失败，会保留 mock 数据兜底。
+横版短视频风格的足球比赛胜平负概率走势可视化。当前版本会默认加载荷兰 vs 日本这场 Polymarket 真实历史价格；如果接口失败，会保留 mock 数据兜底。
 
 ## 运行
 
@@ -63,8 +63,8 @@ fifwc-nld-jpn-2026-06-14
 https://polymarket.com/zh/sports/world-cup/fifwc-nld-jpn-2026-06-14
 ```
 
-该页面的 Moneyline 市场是三个独立 Yes/No 市场：Netherlands 胜、平局、Japan 胜。应用读取三个 Yes token 的 `/prices-history`，再归一化为主胜/平局/客胜三条概率线。
+该页面的 Moneyline 市场是三个独立 Yes/No 市场：荷兰胜、平局、日本胜。应用读取三个 Yes token 的 `/prices-history`，再归一化为主胜/平局/客胜三条概率线。
 
 时间轴不是把开赛到终场的真实时间简单压缩到 90 分钟，而是按比赛时钟分段校准：开场、关键进球反应点、半场、补时和终场。
 
-注意：Polymarket 历史价格提供的是时间戳和价格，不包含进球、红牌等比赛事件时间。因此 Netherlands vs Japan 这场使用单独补入的真实进球节点，并把卡片贴到对应价格变动附近；其他未配置事件的比赛会退回到自动识别“概率跳变”节点。
+注意：Polymarket 历史价格提供的是时间戳和价格，不包含进球、红牌等比赛事件时间。因此荷兰 vs 日本这场使用单独补入的真实进球节点，并把卡片贴到对应价格变动附近；其他未配置事件的比赛会退回到自动识别“概率跳变”节点。

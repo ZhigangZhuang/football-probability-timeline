@@ -64,6 +64,10 @@ type ConfiguredGoal = {
 type MatchConfig = {
   timestampAnchors: (startTs: number, endTs: number) => Array<{ minute: number; ts: number }>;
   goals: ConfiguredGoal[];
+  displayNames?: {
+    home: string;
+    away: string;
+  };
 };
 
 function parseJsonArray<T>(value: string, fallback: T[]): T[] {
@@ -149,6 +153,10 @@ function chartPosition(minute: number, value: number) {
 
 const matchConfigs: Record<string, MatchConfig> = {
   "fifwc-nld-jpn-2026-06-14": {
+    displayNames: {
+      home: "荷兰",
+      away: "日本"
+    },
     timestampAnchors: (startTs, endTs) => [
       { minute: 0, ts: startTs + MARKET_REACTION_LAG_SECONDS },
       { minute: 45, ts: startTs + 50 * 60 },
@@ -164,7 +172,7 @@ const matchConfigs: Record<string, MatchConfig> = {
         minute: 51,
         title: "51' 进球",
         subtitle: "范戴克",
-        description: "Netherlands 1-0",
+        description: "荷兰 1-0",
         scoreAfter: "1-0",
         avatarUrl: "https://ui-avatars.com/api/?name=%E8%8C%83%E6%88%B4%E5%85%8B&background=f97316&color=fff&bold=true&size=128",
         team: "home",
@@ -176,7 +184,7 @@ const matchConfigs: Record<string, MatchConfig> = {
         minute: 57,
         title: "57' 进球",
         subtitle: "中村敬斗",
-        description: "Japan 1-1",
+        description: "日本 1-1",
         scoreAfter: "1-1",
         avatarUrl: "https://ui-avatars.com/api/?name=%E4%B8%AD%E6%9D%91%E6%95%AC%E6%96%97&background=1d4ed8&color=fff&bold=true&size=128",
         team: "away",
@@ -188,7 +196,7 @@ const matchConfigs: Record<string, MatchConfig> = {
         minute: 64,
         title: "64' 进球",
         subtitle: "萨默维尔",
-        description: "Netherlands 2-1",
+        description: "荷兰 2-1",
         scoreAfter: "2-1",
         avatarUrl: "https://ui-avatars.com/api/?name=%E8%90%A8%E9%BB%98%E7%BB%B4%E5%B0%94&background=f97316&color=fff&bold=true&size=128",
         team: "home",
@@ -200,7 +208,7 @@ const matchConfigs: Record<string, MatchConfig> = {
         minute: 89,
         title: "89' 进球",
         subtitle: "镰田大地",
-        description: "Japan 2-2",
+        description: "日本 2-2",
         scoreAfter: "2-2",
         avatarUrl: "https://ui-avatars.com/api/?name=%E9%95%B0%E7%94%B0%E5%A4%A7%E5%9C%B0&background=1d4ed8&color=fff&bold=true&size=128",
         team: "away",
@@ -573,8 +581,8 @@ export async function GET(request: Request) {
       );
     });
 
-    const homeName = homeTeam?.alias ?? homeTeam?.name ?? "主队";
-    const awayName = awayTeam?.alias ?? awayTeam?.name ?? "客队";
+    const homeName = matchConfig?.displayNames?.home ?? homeTeam?.alias ?? homeTeam?.name ?? "主队";
+    const awayName = matchConfig?.displayNames?.away ?? awayTeam?.alias ?? awayTeam?.name ?? "客队";
     const league = slug.split("-")[0] || "epl";
     const leaguePath = league === "fifwc" ? "world-cup" : league;
     const payload: MatchTimelinePayload = {

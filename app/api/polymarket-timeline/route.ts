@@ -44,7 +44,7 @@ type PriceHistoryPoint = {
 
 const GAMMA_API_BASE = "https://gamma-api.polymarket.com";
 const CLOB_API_BASE = "https://clob.polymarket.com";
-const DEFAULT_SLUG = "ucl-psg-ars-2026-05-30";
+const DEFAULT_SLUG = "fifwc-nld-jpn-2026-06-14";
 const MARKET_REACTION_LAG_SECONDS = 60;
 const ESTIMATED_HALFTIME_SECONDS = 16 * 60;
 
@@ -148,6 +148,67 @@ function chartPosition(minute: number, value: number) {
 }
 
 const matchConfigs: Record<string, MatchConfig> = {
+  "fifwc-nld-jpn-2026-06-14": {
+    timestampAnchors: (startTs, endTs) => [
+      { minute: 0, ts: startTs + MARKET_REACTION_LAG_SECONDS },
+      { minute: 45, ts: startTs + 50 * 60 },
+      { minute: 51, ts: startTs + 70 * 60 },
+      { minute: 57, ts: startTs + 76 * 60 },
+      { minute: 64, ts: startTs + 83 * 60 },
+      { minute: 89, ts: startTs + 108 * 60 },
+      { minute: 90, ts: endTs }
+    ],
+    goals: [
+      {
+        id: "goal-51-van-dijk",
+        minute: 51,
+        title: "51' 进球",
+        subtitle: "范戴克",
+        description: "Netherlands 1-0",
+        scoreAfter: "1-0",
+        avatarUrl: "https://ui-avatars.com/api/?name=%E8%8C%83%E6%88%B4%E5%85%8B&background=f97316&color=fff&bold=true&size=128",
+        team: "home",
+        color: "green",
+        probabilityKey: "homeWin"
+      },
+      {
+        id: "goal-57-nakamura",
+        minute: 57,
+        title: "57' 进球",
+        subtitle: "中村敬斗",
+        description: "Japan 1-1",
+        scoreAfter: "1-1",
+        avatarUrl: "https://ui-avatars.com/api/?name=%E4%B8%AD%E6%9D%91%E6%95%AC%E6%96%97&background=1d4ed8&color=fff&bold=true&size=128",
+        team: "away",
+        color: "yellow",
+        probabilityKey: "draw"
+      },
+      {
+        id: "goal-64-summerville",
+        minute: 64,
+        title: "64' 进球",
+        subtitle: "萨默维尔",
+        description: "Netherlands 2-1",
+        scoreAfter: "2-1",
+        avatarUrl: "https://ui-avatars.com/api/?name=%E8%90%A8%E9%BB%98%E7%BB%B4%E5%B0%94&background=f97316&color=fff&bold=true&size=128",
+        team: "home",
+        color: "green",
+        probabilityKey: "homeWin"
+      },
+      {
+        id: "goal-89-kamada",
+        minute: 89,
+        title: "89' 进球",
+        subtitle: "镰田大地",
+        description: "Japan 2-2",
+        scoreAfter: "2-2",
+        avatarUrl: "https://ui-avatars.com/api/?name=%E9%95%B0%E7%94%B0%E5%A4%A7%E5%9C%B0&background=1d4ed8&color=fff&bold=true&size=128",
+        team: "away",
+        color: "yellow",
+        probabilityKey: "draw"
+      }
+    ]
+  },
   "ucl-psg-ars-2026-05-30": {
     timestampAnchors: (startTs) => [
       { minute: 0, ts: startTs + MARKET_REACTION_LAG_SECONDS },
@@ -515,9 +576,10 @@ export async function GET(request: Request) {
     const homeName = homeTeam?.alias ?? homeTeam?.name ?? "主队";
     const awayName = awayTeam?.alias ?? awayTeam?.name ?? "客队";
     const league = slug.split("-")[0] || "epl";
+    const leaguePath = league === "fifwc" ? "world-cup" : league;
     const payload: MatchTimelinePayload = {
       source: "polymarket",
-      sourceUrl: `https://polymarket.com/zh/sports/${league}/${slug}`,
+      sourceUrl: `https://polymarket.com/zh/sports/${leaguePath}/${slug}`,
       slug,
       title: event.title,
       score: event.score ?? "2-1",

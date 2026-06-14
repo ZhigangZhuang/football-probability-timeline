@@ -2,7 +2,7 @@
 
 import { Activity } from "lucide-react";
 import type { ProbabilityPoint, TeamInfo } from "@/types";
-import { formatMatchMinute, formatPercent } from "@/lib/utils";
+import { cn, formatMatchMinute, formatPercent } from "@/lib/utils";
 
 type ProbabilitySummaryProps = {
   point: ProbabilityPoint;
@@ -31,50 +31,50 @@ function leaderLabel(point: ProbabilityPoint, teams: ProbabilitySummaryProps["te
 
 export function ProbabilitySummary({ point, teams }: ProbabilitySummaryProps) {
   return (
-    <section className="relative flex-1 overflow-hidden rounded-[22px] border border-white/80 bg-white/82 p-3 shadow-lg shadow-slate-200/60 backdrop-blur">
-      <div className="pointer-events-none absolute -bottom-8 -right-5 text-[88px] font-black text-emerald-500 opacity-[0.055]">
+    <section className="relative flex-1 overflow-hidden rounded-[24px] border border-white/80 bg-white/85 p-4 shadow-lg shadow-slate-200/60 backdrop-blur">
+      <div className="pointer-events-none absolute -bottom-8 -right-5 text-[112px] font-black text-emerald-500 opacity-[0.055]">
         %
       </div>
-      <div className="mb-3 flex items-center justify-between">
+      <div className="mb-4 flex items-center justify-between">
         <div>
-          <div className="text-[9px] font-black uppercase tracking-[0.18em] text-slate-400">market pulse</div>
-          <div className="text-[16px] font-black text-slate-950">当前概率</div>
+          <div className="text-[13px] font-black text-slate-400">当前盘面</div>
+          <div className="text-[23px] font-black leading-tight text-slate-950">胜平负概率</div>
         </div>
-        <div className="grid h-7 w-7 place-items-center rounded-full bg-slate-950 text-white">
-          <Activity className="h-3.5 w-3.5" />
+        <div className="grid h-10 w-10 place-items-center rounded-full bg-slate-950 text-white">
+          <Activity className="h-5 w-5" />
         </div>
       </div>
 
-      <div className="mb-3 rounded-2xl border border-slate-200 bg-white/70 px-3 py-2">
+      <div className="mb-4 rounded-[22px] border border-slate-200 bg-white/72 px-4 py-3">
         <div className="flex items-center justify-between gap-2">
           <div>
-            <div className="text-[9px] font-black uppercase tracking-[0.16em] text-slate-400">focus</div>
-            <div className="max-w-[180px] truncate text-[17px] font-black leading-tight text-slate-950">
+            <div className="text-[13px] font-black text-slate-400">领先方向</div>
+            <div className="max-w-[210px] truncate text-[28px] font-black leading-tight text-slate-950">
               {leaderLabel(point, teams)}
             </div>
           </div>
-          <div className="rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-black text-emerald-700">
+          <div className="rounded-full bg-emerald-50 px-3 py-1.5 text-[16px] font-black text-emerald-700">
             {formatMatchMinute(point.minute)}
           </div>
         </div>
       </div>
 
-      <div className="space-y-2.5">
+      <div className="space-y-4">
         {rows.map((row) => {
           const label =
-            row.key === "homeWin" ? teams.home.shortName : row.key === "awayWin" ? teams.away.shortName : row.label;
+            row.key === "homeWin" ? `${teams.home.name}胜` : row.key === "awayWin" ? `${teams.away.name}胜` : row.label;
           const value = point[row.key];
 
           return (
             <div key={row.key}>
-              <div className="mb-1 flex items-center justify-between text-[10px] font-black">
+              <div className="mb-1.5 flex items-center justify-between text-[16px] font-black">
                 <span className="flex items-center gap-1.5 text-slate-600">
-                  <span className={`h-2 w-2 rounded-full ${row.color}`} />
+                  <span className={`h-3 w-3 rounded-full ${row.color}`} />
                   {label}
                 </span>
-                <span className={row.text}>{formatPercent(value)}</span>
+                <span className={cn("text-[20px]", row.text)}>{formatPercent(value)}</span>
               </div>
-              <div className="h-2.5 overflow-hidden rounded-full bg-slate-100">
+              <div className="h-4 overflow-hidden rounded-full bg-slate-100">
                 <div className={`h-full rounded-full ${row.color}`} style={{ width: `${Math.max(3, value)}%` }} />
               </div>
             </div>

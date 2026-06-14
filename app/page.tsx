@@ -239,7 +239,7 @@ export default function Home() {
       >
         <div className="field-texture absolute inset-0 opacity-95" />
 
-        <div className="relative z-10 grid h-full grid-cols-[300px_minmax(0,1fr)] gap-5">
+        <div className="relative z-10 grid h-full grid-cols-[400px_minmax(0,1fr)] gap-4">
           <aside className="flex min-h-0 flex-col gap-3">
             <MatchHeader teams={teams} score={liveScore} currentMinute={currentMinute} isDark={isDarkTheme} />
             <EventTimeline events={events} currentMinute={currentMinute} />
